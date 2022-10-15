@@ -17,9 +17,13 @@ import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.JsonWebToken;
 import mil.nga.keycloak.keys.loader.LoginGovPublicKeyStorageManager;
 
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 import java.io.IOException;
 import java.security.PublicKey;
+import org.keycloak.services.resources.IdentityBrokerService;
+import org.keycloak.services.resources.RealmsResource;
 
 public class LoginGovIdentityProvider
         extends OIDCIdentityProvider
@@ -133,6 +137,48 @@ public class LoginGovIdentityProvider
         identityContext.setEmail(email.toLowerCase());
 
         return identityContext;
+    }
+
+
+    @Override
+    public Response keycloakInitiatedBrowserLogout(KeycloakSession session, UserSessionModel userSession, UriInfo uriInfo, RealmModel realm) {
+        LoginGovIdentityProviderConfig config = (LoginGovIdentityProviderConfig)getConfig();
+
+        if(config.getDeepLogoutValue()) {
+            /**
+             * Due to login.gov no longer accepting id_token_hint (@see: https://developers.login.gov/oidc/#logout) we need
+             * to override the KeyCloak method to ensure that client_id is sent instead of the id_token_hint.
+             *
+             * To be clear the recommended approach is to use id_token_hint per the spec:
+             *  https://openid.net/specs/openid-connect-rpinitiated-1_0.html
+             *
+             * For default / original implementation./
+             * @see https://github.com/keycloak/keycloak/blob/main/services/src/main/java/org/keycloak/broker/oidc/OIDCIdentityProvider.java#L165-L185
+             */
+            if (getConfig().getLogoutUrl() == null || getConfig().getLogoutUrl().trim().equals("")) return null;
+            String clientId = getConfig().getClientId();
+            String sessionId = userSession.getId();
+
+            UriBuilder logoutUri = UriBuilder.fromUri(getConfig().getLogoutUrl())
+                    .queryParam("state", sessionId);
+            if (clientId != null) logoutUri.queryParam("client_id", clientId);
+
+            String redirect = RealmsResource.brokerUrl(uriInfo)
+                    .path(IdentityBrokerService.class, "getEndpoint")
+                    .path(OIDCEndpoint.class, "logoutResponse")
+                    .build(realm.getName(), getConfig().getAlias()).toString();
+            logoutUri.queryParam("post_logout_redirect_uri", redirect);
+
+            Response response = Response.status(302).location(logoutUri.build()).build();
+            return response;
+
+        } else {
+            /*
+             * Setting dictate that the user should not be logged out of login.gov.
+             * Returning null here means that there is no additional logout redirect.
+             */
+            return null;
+        }
     }
 
     /**
