@@ -36,13 +36,13 @@ public class LoginGovIdentityProviderFactory
 
     @Override
     public Map<String, String> parseConfig(KeycloakSession session, InputStream inputStream) {
-        OIDCConfigurationRepresentation rep;
+        LoginGovOIDCConfigurationRepresentation rep;
         try {
-            rep = JsonSerialization.readValue(inputStream, OIDCConfigurationRepresentation.class);
+            rep = JsonSerialization.readValue(inputStream, LoginGovOIDCConfigurationRepresentation.class);
         } catch (IOException e) {
             throw new RuntimeException("failed to load openid connect metadata", e);
         }
-        OIDCIdentityProviderConfig config = new OIDCIdentityProviderConfig(new IdentityProviderModel());
+        LoginGovIdentityProviderConfig config = new LoginGovIdentityProviderConfig(new IdentityProviderModel());
         config.setIssuer(rep.getIssuer());
         config.setLogoutUrl(rep.getLogoutEndpoint());
         config.setAuthorizationUrl(rep.getAuthorizationEndpoint());
@@ -53,6 +53,9 @@ public class LoginGovIdentityProviderFactory
             config.setUseJwksUrl(true);
             config.setJwksUrl(rep.getJwksUri());
         }
+
+        config.setDeepLogoutValue(rep.getDeepLogout().toString());
+
         return config.getConfig();
     }
 

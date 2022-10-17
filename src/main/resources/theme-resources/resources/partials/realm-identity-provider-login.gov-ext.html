@@ -11,3 +11,10 @@
     <kc-tooltip>{{:: 'login_gov.acr_values.tooltip' | translate}}</kc-tooltip>
 </div>
 
+<div class="form-group">
+    <label class="col-md-2 control-label" for="deepLogout">{{:: 'login_gov.deep_logout' | translate}}</label>
+    <div class="col-md-6">
+        <input ng-model="identityProvider.config.deepLogout" id="deepLogout" onoffswitchvalue on-text="{{:: 'onText' | translate}}" off-text="{{:: 'offText' | translate}}" />
+    </div>
+    <kc-tooltip>{{:: 'login_gov.deep_logout.tooltip' | translate}}</kc-tooltip>
+</div>
