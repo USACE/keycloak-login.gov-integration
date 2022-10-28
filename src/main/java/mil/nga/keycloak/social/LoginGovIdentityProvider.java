@@ -124,19 +124,23 @@ public class LoginGovIdentityProvider
         logger.info("-- x509_subject --");
         logger.info(x509_subject);
 
-        final String x509_presented = (String) idToken.getOtherClaims().get(LoginGovToken.X509_PRESENTED);
-        logger.info("-- x509_presented --");
-        logger.info(x509_presented);
+        // final String x509_presented = (String) idToken.getOtherClaims().get(LoginGovToken.X509_PRESENTED);
+        // logger.info("-- x509_presented --");
+        // logger.info(x509_presented);
 
         /**
          * Set custom attributes from Login.gov so that application are able to read
          * them.
          */
         if (x509_subject != null) {
-            identityContext.setUserAttribute(X509_PRESENTED_ATTR, x509_presented);
+            logger.info("-- x509_presented --");
+            identityContext.setUserAttribute(X509_PRESENTED_ATTR, 'true');
             identityContext.setUserAttribute(CAC_SUBJECT_ATTR, x509_subject);
             identityContext.setUserAttribute(CAC_UUID_ATTR, extractUniqueIdentifierFromNormalizedDN(x509_subject));
             identityContext.setUsername(extractCNFromNormalizedDN(x509_subject));
+        } else {
+            logger.info("-- no x509_presented --");
+            identityContext.setUserAttribute(X509_PRESENTED_ATTR, 'false');
         }
 
         if (email == null || email.isEmpty()) {
