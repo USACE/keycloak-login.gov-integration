@@ -151,6 +151,15 @@ public class LoginGovIdentityProvider
         return identityContext;
     }
 
+    /**
+     * To avoid deleting users as the only way to capture new/changed values, certain values will be updated on login.
+     * credit: https://stackoverflow.com/questions/57912634/update-keycloak-user-data-based-on-data-present-in-identity-provider-token/58002033#58002033
+     */
+    @Override
+    public void updateBrokeredUser(KeycloakSession session, RealmModel realm, 
+        UserModel user, BrokeredIdentityContext context) {
+        user.setSingleAttribute(X509_PRESENTED_ATTR,context.getUserAttribute(X509_PRESENTED_ATTR));
+    }
 
     @Override
     public Response keycloakInitiatedBrowserLogout(KeycloakSession session, UserSessionModel userSession, UriInfo uriInfo, RealmModel realm) {
