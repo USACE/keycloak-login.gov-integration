@@ -39,7 +39,7 @@ public class LoginGovIdentityProvider
     public static final String EMAIL_SCOPE = "email";
     public static final String OPENID_SCOPE = "openid";
     public static final String X509_SCOPE = "x509:subject";
-    public static final String X509_PRESENTED_SCOPE = "x509_presented";
+    public static final String X509_PRESENTED_SCOPE = "x509:presented";
     public static final String DEFAULT_SCOPE = OPENID_SCOPE + " "
             + X509_SCOPE + " "
             + X509_PRESENTED_SCOPE  + " "
@@ -124,14 +124,15 @@ public class LoginGovIdentityProvider
         logger.info("-- x509_subject --");
         logger.info(x509_subject);
 
-        String claims = String.join(",", idToken.getOtherClaims().keySet());
-        logger.info("-- claims --");
-        logger.info(claims);
+        // String claims = String.join(",", idToken.getOtherClaims().keySet());
+        // logger.info("-- claims --");
+        // logger.info(claims);
 
         if (idToken.getOtherClaims().containsKey("x509_presented")){
             String x509_presented = (String) idToken.getOtherClaims().get("x509_presented");
             logger.info("-- x509_presented --");
             logger.info(x509_presented);
+            identityContext.setUserAttribute(X509_PRESENTED_ATTR, x509_presented);
         }
 
         // final String x509_presented = (String) idToken.getOtherClaims().get(LoginGovToken.X509_PRESENTED);
@@ -143,14 +144,9 @@ public class LoginGovIdentityProvider
          * them.
          */
         if (x509_subject != null) {
-            logger.info("-- x509_presented --");
-            identityContext.setUserAttribute(X509_PRESENTED_ATTR, "true");
             identityContext.setUserAttribute(CAC_SUBJECT_ATTR, x509_subject);
             identityContext.setUserAttribute(CAC_UUID_ATTR, extractUniqueIdentifierFromNormalizedDN(x509_subject));
             identityContext.setUsername(extractCNFromNormalizedDN(x509_subject));
-        } else {
-            logger.info("-- no x509_presented --");
-            identityContext.setUserAttribute(X509_PRESENTED_ATTR, "false");
         }
 
         if (email == null || email.isEmpty()) {
