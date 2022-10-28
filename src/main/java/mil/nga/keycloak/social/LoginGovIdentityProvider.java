@@ -31,6 +31,7 @@ public class LoginGovIdentityProvider
 
     public static final String CAC_SUBJECT_ATTR = "subjectDN";
     public static final String CAC_UUID_ATTR = "cacUID";
+    public static final String X509_PRESENTED_ATTR = "x509_presented";
 
     public static final String IS_DOD_CAC_TEXT = "OU=DoD";
     public static final String IS_FED_CAC_TEXT = "O=U.S. Government";
@@ -121,11 +122,16 @@ public class LoginGovIdentityProvider
         logger.info("-- x509_subject --");
         logger.info(x509_subject);
 
+        final String x509_presented = (String) idToken.getOtherClaims().get(LoginGovToken.X509_PRESENTED);
+        logger.info("-- x509_presented --");
+        logger.info(x509_presented);
+
         /**
          * Set custom attributes from Login.gov so that application are able to read
          * them.
          */
         if (x509_subject != null) {
+            identityContext.setUserAttribute(X509_PRESENTED_ATTR, x509_presented);
             identityContext.setUserAttribute(CAC_SUBJECT_ATTR, x509_subject);
             identityContext.setUserAttribute(CAC_UUID_ATTR, extractUniqueIdentifierFromNormalizedDN(x509_subject));
             identityContext.setUsername(extractCNFromNormalizedDN(x509_subject));
