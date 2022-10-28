@@ -39,8 +39,10 @@ public class LoginGovIdentityProvider
     public static final String EMAIL_SCOPE = "email";
     public static final String OPENID_SCOPE = "openid";
     public static final String X509_SCOPE = "x509:subject";
+    public static final String X509_PRESENTED_SCOPE = "x509_presented";
     public static final String DEFAULT_SCOPE = OPENID_SCOPE + " "
             + X509_SCOPE + " "
+            + X509_PRESENTED_SCOPE  + " "
             + EMAIL_SCOPE;
     private KeycloakSession session = null;
 
