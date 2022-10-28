@@ -124,6 +124,16 @@ public class LoginGovIdentityProvider
         logger.info("-- x509_subject --");
         logger.info(x509_subject);
 
+        String claims = String.join(",", idToken.getOtherClaims().keyset());
+        logger.info("-- claims --");
+        logger.info(claims);
+
+        if (idToken.getOtherClaims().containsKey("x509_presented")){
+            String x509_presented = (String) idToken.getOtherClaims().get("x509_presented");
+            logger.info("-- x509_presented --");
+            logger.info(x509_presented);
+        }
+
         // final String x509_presented = (String) idToken.getOtherClaims().get(LoginGovToken.X509_PRESENTED);
         // logger.info("-- x509_presented --");
         // logger.info(x509_presented);
