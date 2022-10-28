@@ -124,7 +124,7 @@ public class LoginGovIdentityProvider
         logger.info("-- x509_subject --");
         logger.info(x509_subject);
 
-        String claims = String.join(",", idToken.getOtherClaims().keyset());
+        String claims = String.join(",", idToken.getOtherClaims().keySet());
         logger.info("-- claims --");
         logger.info(claims);
 
