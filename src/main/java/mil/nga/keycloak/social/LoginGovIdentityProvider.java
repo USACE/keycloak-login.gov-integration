@@ -134,13 +134,13 @@ public class LoginGovIdentityProvider
          */
         if (x509_subject != null) {
             logger.info("-- x509_presented --");
-            identityContext.setUserAttribute(X509_PRESENTED_ATTR, 'true');
+            identityContext.setUserAttribute(X509_PRESENTED_ATTR, "true");
             identityContext.setUserAttribute(CAC_SUBJECT_ATTR, x509_subject);
             identityContext.setUserAttribute(CAC_UUID_ATTR, extractUniqueIdentifierFromNormalizedDN(x509_subject));
             identityContext.setUsername(extractCNFromNormalizedDN(x509_subject));
         } else {
             logger.info("-- no x509_presented --");
-            identityContext.setUserAttribute(X509_PRESENTED_ATTR, 'false');
+            identityContext.setUserAttribute(X509_PRESENTED_ATTR, "false");
         }
 
         if (email == null || email.isEmpty()) {
