@@ -28,4 +28,8 @@ public class LoginGovToken extends IDToken {
         this.x509_presented = X509_presented;
     }
 
+    public String getX509_Presented() {
+        return this.x509_presented;
+    }
+
 }
