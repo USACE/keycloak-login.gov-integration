@@ -146,7 +146,10 @@ public class LoginGovIdentityProvider
         if (x509_subject != null) {
             identityContext.setUserAttribute(CAC_SUBJECT_ATTR, x509_subject);
             identityContext.setUserAttribute(CAC_UUID_ATTR, extractUniqueIdentifierFromNormalizedDN(x509_subject));
-            identityContext.setUsername(extractCNFromNormalizedDN(x509_subject));
+            String extractCN = extractCNFromNormalizedDN(x509_subject);
+            if (!extractCN.equals("")){
+                identityContext.setUsername(extractCNFromNormalizedDN(x509_subject));
+            }
         }
 
         if (email == null || email.isEmpty()) {
