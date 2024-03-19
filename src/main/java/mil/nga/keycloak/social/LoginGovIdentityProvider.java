@@ -129,7 +129,7 @@ public class LoginGovIdentityProvider
         // logger.info(claims);
 
         if (idToken.getOtherClaims().containsKey("x509_presented")){
-            String x509_presented = (String) idToken.getOtherClaims().get("x509_presented");
+            String x509_presented = String.valueOf(idToken.getOtherClaims().get("x509_presented"));
             logger.info("-- x509_presented --");
             logger.info(x509_presented);
             identityContext.setUserAttribute(X509_PRESENTED_ATTR, x509_presented);
